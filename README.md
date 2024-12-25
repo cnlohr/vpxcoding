@@ -52,7 +52,9 @@ int main()
 It appears the optimal bit selection is:
 
 ```c
-	probability = (chance of next bit being 0) * 257 - 0.5;
+	// Higher numbers mean 0 is more likely, 0.5 = equally possible 1 and 0.
+	float probability01 = (chance of next bit being 0);
+	int probability = probability01 * 257 - 0.5;
 
 	// Must bound.  Probability is only a uint8_t
 	if( probability > 255 ) probability = 255;
