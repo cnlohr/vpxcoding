@@ -21,6 +21,8 @@ Decode Time: 537.677ms (29.758 MBytes/s)
 ```
 (on a AMD Ryzen 7 5800X, GCC 11.4.0, -O2)
 
+In my tests, depending on the application, this seems to be able to save between 1-5% over huffman trees.  But, notably, there are situations where you can use this to much greater effect and simplicity than huffman trees (but not all situations).
+
 ## Example
 
 It's very simple, if you have a bitstream you want to encode, you can write something like:
