@@ -1,6 +1,6 @@
 # vpxcoding single-file-header C library
 
-Single file header form of the arithmetic coder from [libvpx](https://github.com/webmproject/libvpx) as a general purpose compression/decompression of bitstreams algorithm.
+Single file header form of the arithmetic coder from [libvpx](https://github.com/webmproject/libvpx) (From the video codec VP8/VP9) as a general purpose compression/decompression of bitstreams algorithm.
 
 The idea of this coding is, given:
 
