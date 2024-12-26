@@ -35,3 +35,14 @@ It appears the optimal bit selection is:
  * https://github.com/danielrh/arithmetic_coding_tutorial 
  * https://github.com/danielrh/losslessh264
 
+ * This video is a GREAT introduction to Huffman, Arithmetic Coding, And ANS [Better than Huffman](https://www.youtube.com/watch?v=RFWJM8JMXBs)
+
+These two youtube videos were really good, but don't explain this specific implementation.
+ * [(IC 5.1) Arithmetic coding - introduction](https://www.youtube.com/watch?v=ouYV3rBtrTI)
+ * [(IC 5.2) Arithmetic coding - Example #1](https://www.youtube.com/watch?v=7vfqhoJVwuc)
+ * [(IC 5.3) Arithmetic coding - Example #2](https://www.youtube.com/watch?v=CXCWQy9N2ag)
+ * [(IC 5.4) Why the interval needs to be completely contained](https://www.youtube.com/watch?v=jHS8-rmEo5k)
+ * [(IC 5.5) Rescaling operations for arithmetic coding](https://www.youtube.com/watch?v=t8_198HHSfI)
+ * This continues on for 13? episodes?
+
+
