@@ -9,7 +9,7 @@ The idea of this coding is, given:
 1. A bitstream
 2. Knowledge about how likely the next bit is to be a 0 or 1 (written as a probability from 0..255)
 
-You can optimally code an output bitstream, with compression better than huffman trees by using arithmetic coding.  Please note this is **not** a replacement for something like lz77, zstd, zlib, etc.  But **is** a replacement for huffman coding.  This ONLY covers optimal symbol expression.  If there is data-similarity that must be compressed by another algorithm.  In general, you will want to get rid of whatever entropy you can before applying this compression technique. I.e. you can't just use this to compress text.
+You can optimally code an output bitstream, with compression better than huffman trees by using arithmetic coding.  Please note this is **not** a replacement for something like lz77, zstd, zlib, etc.  But **is** a replacement for huffman coding.  This ONLY covers optimal symbol expression.  If there is data-similarity that must be compressed by another algorithm.  In general, you will want to get rid of whatever entropy you can before applying this compression technique. I.e. you can't just use this to compress text.  If you are looking for something for that, you may want to consider my [heatshrink single-file-header](https://github.com/cnlohr/heatshrink-sfh).
 
 It's also reaonsably fast. Not great, but not bad.
 
