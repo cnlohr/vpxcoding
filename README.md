@@ -1,4 +1,4 @@
-# vpxcoding single-file-header library.
+# vpxcoding single-file-header C library
 
 Single file header form of the arithmetic coder from [libvpx](https://github.com/webmproject/libvpx) as a general purpose compression/decompression of bitstreams algorithm.
 
