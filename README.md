@@ -19,7 +19,22 @@ Matching 16777216 bytes
 Encode Time:  375.116ms (42.653 MBytes/s)
 Decode Time: 537.677ms (29.758 MBytes/s)
 ```
-(on a AMD Ryzen 7 5800X, GCC 11.4.0, -O2)
+(on a AMD Ryzen 7 5800X, GCC 11.4.0, -O2) 
+
+Also, the code is very small, about 768 bytes each for reading and writing when compiled. (below, using -Os) x64.
+```
+.rodata	0100 (256 bytes)  vpx_norm           // Table used for both encode and decode
+
+.text	003f (63 bytes)   vpx_start_encode
+.text	00e4 (228 bytes)  vpx_write
+.text	005e (94 bytes)   vpx_stop_encode
+
+.text	0073 (115 bytes)  vpx_read
+.text	00fa (250 bytes)  vpx_reader_fill
+.text	003f (35 bytes)   vpx_reader_find_end
+.text	0066 (102 bytes)  vpx_reader_init
+.text	0016 (22 bytes)   vpx_reader_has_error
+```
 
 In my tests, depending on the application, this seems to be able to save between 1-5% over huffman trees.  But, notably, there are situations where you can use this to much greater effect and simplicity than huffman trees (but not all situations).
 
