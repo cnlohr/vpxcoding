@@ -73,7 +73,7 @@ int main( int argc, char ** argv )
 
 	printf( "Matching %d bytes\n", i );
 	printf( "Encode Time:  %.3fms (%.3f MBytes/s)\n", (endEnc - startEnc)*1000.0, (sizeof(dummydata)/1024/1024)/(endEnc - startEnc) );
-	printf( "Deccode Time: %.3fms (%.3f MBytes/s)\n", (endDec - startDec)*1000.0, (sizeof(dummydata)/1024/1024)/(endDec - startDec) );
+	printf( "Decode Time: %.3fms (%.3f MBytes/s)\n", (endDec - startDec)*1000.0, (sizeof(dummydata)/1024/1024)/(endDec - startDec) );
 
 	return 0;
 }
