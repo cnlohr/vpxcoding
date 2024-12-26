@@ -2,8 +2,10 @@
 #include <stdio.h>
 #include <sys/time.h>
 
+#define VPXCODING_DECORATOR
 #define VPXCODING_READER
 #define VPXCODING_WRITER
+#define VPXCODING_IMPLEMENTATION
 #include "vpxcoding.h"
 
 uint8_t dummydata[1024*64];

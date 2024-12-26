@@ -4,7 +4,7 @@ bittester : bittester.c
 	gcc -o $@ $^ -O2 -g
 
 optimalfinder : optimalfinder.c
-	gcc -o $@ $^ -O2 -g
+	gcc -o $@ $^ -Os -g
 
 test : bittester
 	./bittester

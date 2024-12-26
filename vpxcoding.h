@@ -324,7 +324,7 @@ VPXCODING_DECORATOR void vpx_start_encode(vpx_writer *br, uint8_t *source, size_
 // Returns 0 on success and returns -1 in case of error.
 VPXCODING_DECORATOR int vpx_stop_encode(vpx_writer *br);
 
-static inline VPX_NO_UNSIGNED_SHIFT_CHECK void vpx_write(vpx_writer *br,
+VPXCODING_DECORATOR VPX_NO_UNSIGNED_SHIFT_CHECK void vpx_write(vpx_writer *br,
 	int bit, int probability);
 
 static inline void vpx_write_bit(vpx_writer *w, int bit) {
@@ -337,7 +337,7 @@ static inline void vpx_write_literal(vpx_writer *w, int data, int bits) {
 }
 
 
-static inline VPX_NO_UNSIGNED_SHIFT_CHECK void vpx_write(vpx_writer *br,
+VPXCODING_DECORATOR VPX_NO_UNSIGNED_SHIFT_CHECK void vpx_write(vpx_writer *br,
 	int bit, int probability) {
 	unsigned int split;
 	int count = br->count;
