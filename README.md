@@ -1,15 +1,44 @@
 # vpxcoding single-file-header C library
 
-Single file header form of the arithmetic coder from [libvpx](https://github.com/webmproject/libvpx) as a general purpose compression/decompression of bitstreams algorithm.
+Single file header form of the arithmetic coder from [libvpx](https://github.com/webmproject/libvpx) (From the video codec VP8/VP9) as a general purpose compression/decompression of bitstreams algorithm.
 
 The idea of this coding is, given:
 
 1. A bitstream
 2. Knowledge about how likely the next bit is to be a 0 or 1 (written as a probability from 0..255)
 
-You can optimally code an output bitstream, with compression better than huffman trees by using arithmetic coding.  Please note this is **not** a replacement for something like lz77, zstd, zlib, etc.  But **is** a replacement for huffman coding.  This ONLY covers optimal symbol expression.  If there is data-similarity that must be compressed by another algorithm.
+You can optimally code an output bitstream, with compression better than huffman trees by using arithmetic coding.  Please note this is **not** a replacement for something like lz77, zstd, zlib, etc.  But **is** a replacement for huffman coding.  This ONLY covers optimal symbol expression.  If there is data-similarity that must be compressed by another algorithm.  In general, you will want to get rid of whatever entropy you can before applying this compression technique. I.e. you can't just use this to compress text.
 
-In general, you will want to get rid of whatever entropy you can before applying this compression technique.
+It's also reaonsably fast. Not great, but not bad.
+
+```
+Input  Len: 16777216 bytes
+Output Len: 14104056 bytes
+Relative Size: 84.07 %
+Matching 16777216 bytes
+Encode Time:  375.116ms (42.653 MBytes/s)
+Decode Time: 537.677ms (29.758 MBytes/s)
+```
+(on a AMD Ryzen 7 5800X, GCC 11.4.0, -O2) 
+
+Also, the code is very small, about 768 bytes each for reading and writing when compiled. (below, using -Os) x64.
+```
+.rodata	0100 (256 bytes)  vpx_norm           // Table used for both encode and decode
+
+.text	003f (63 bytes)   vpx_start_encode
+.text	00e4 (228 bytes)  vpx_write
+.text	005e (94 bytes)   vpx_stop_encode
+
+.text	0073 (115 bytes)  vpx_read
+.text	00fa (250 bytes)  vpx_reader_fill
+.text	003f (35 bytes)   vpx_reader_find_end
+.text	0066 (102 bytes)  vpx_reader_init
+.text	0016 (22 bytes)   vpx_reader_has_error
+```
+
+In my tests, depending on the application, this seems to be able to save between 1-5% over huffman trees.  But, notably, there are situations where you can use this to much greater effect and simplicity than huffman trees (but not all situations).
+
+## Example
 
 It's very simple, if you have a bitstream you want to encode, you can write something like:
 
