@@ -15,7 +15,15 @@ double GetAbsoluteTime()
 }
 
 uint8_t dummydata[1024*1024*16];
+
+//#define TEST_RANDOM_PROBS
+
+#ifndef TEST_RANDOM_PROBS
+const int arbitrary_prob = 187;
+#else
 uint8_t dummyprobs[1024*1024*16*8];
+#endif
+
 int main( int argc, char ** argv )
 {
 	int i;
@@ -49,7 +57,11 @@ int main( int argc, char ** argv )
 		int bit;
 		for (bit = bits - 1; bit >= 0; bit--)
 		{
-			int prob = dummyprobs[bitno++] = rand()&0xff;
+#ifdef TEST_RANDOM_PROBS
+			int prob = dummyprobs[bitno++];
+#else
+			int prob = arbitrary_prob;
+#endif
 			int outbit = (data >> bit) & 1;
 			vpx_write(&w, outbit, prob);
 		}
@@ -75,8 +87,14 @@ int main( int argc, char ** argv )
 		int bits = 8;
 		int bit;
 		uint8_t data = 0;
+#ifdef TEST_RANDOM_PROBS
+		int prob = dummyprobs[bitno++] = rand()&0xff;
+#else
+		int prob = arbitrary_prob;
+#endif
+
 		for (bit = bits - 1; bit >= 0; bit--)// Arbitrary, for testing
-			data = (data<<1) | vpx_read(&reader, dummyprobs[bitno++]);
+			data = (data<<1) | vpx_read(&reader, prob);
 		if( data != dummydata[i] )
 		{
 			fprintf( stderr, "Disagree at %d (%08x != %08x)\n", i, data, dummydata[i] );
