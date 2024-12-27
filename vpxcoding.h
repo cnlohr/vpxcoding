@@ -44,7 +44,23 @@ extern "C" {
 #define VPXCODING_IMPLEMENTATION
 #endif
 
-
+#ifdef VPXCODING_NOTABLE
+VPXCODING_DECORATOR uint8_t vpx_norm( uint8_t n )
+{
+	return __builtin_clz(n) & 7;
+#if 0
+	// Implementation for systems w/o clz.
+	if( n == 0 ) return 0; // I don't think this is needed
+	int i = 7;
+	if( n >= 16 ) { i -= 4; n >>= 4; }
+	if( n >= 8 ) { i -= 3; n >>= 3; }
+	if( n >= 4 ) { i -= 2; n >>= 2; }
+	if( n >= 2 ) { i -= 1; n >>= 1; }
+	return i;
+#endif
+}
+#define VPXCODING_VPXNORM(x) vpx_norm(x)
+#else
 static const uint8_t vpx_norm[256] = {
 	0, 7, 6, 6, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
@@ -64,6 +80,8 @@ static const uint8_t vpx_norm[256] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
+#define VPXCODING_VPXNORM( x ) vpx_norm[x]
+#endif
 #ifdef VPXCODING_READER
 
 // This is meant to be a large, positive constant that can still be
@@ -262,7 +280,7 @@ VPXCODING_DECORATOR int vpx_read(vpx_reader *r, int prob) {
 	}
 
 	{
-		const unsigned char shift = vpx_norm[(unsigned char)range];
+		const unsigned char shift = VPXCODING_VPXNORM((unsigned char)range);
 		range <<= shift;
 		value <<= shift;
 		count -= shift;
@@ -367,7 +385,7 @@ VPXCODING_DECORATOR VPX_NO_UNSIGNED_SHIFT_CHECK void vpx_write(vpx_writer *br,
 		range = br->range - split;
 	}
 
-	shift = vpx_norm[range];
+	shift = VPXCODING_VPXNORM(range);
 
 	range <<= shift;
 	count += shift;

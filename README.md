@@ -38,6 +38,8 @@ Also, the code is very small, about 768 bytes each for reading and writing when 
 .text	0016 (22 bytes)   vpx_reader_has_error
 ```
 
+If you are on a platform that supports `__builtin_clz`, then you may want to define `VPXCODING_NOTABLE` as that will replace the table call with a `clz` and `andi` operation, which may be faster, and use less cache/RAM.  If you are on a RAM constrained system, you may want to do this as well, but see the note in the header file about the manually unwound log2.
+
 In my tests, depending on the application, this seems to be able to save between 1-5% over huffman trees.  But, notably, there are situations where you can use this to much greater effect and simplicity than huffman trees (but not all situations).
 
 ## Example

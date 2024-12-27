@@ -4,6 +4,7 @@
 
 #define VPXCODING_READER
 #define VPXCODING_WRITER
+#define VPXCODING_NOTABLE
 #include "vpxcoding.h"
 
 double GetAbsoluteTime()
@@ -14,9 +15,21 @@ double GetAbsoluteTime()
 }
 
 uint8_t dummydata[1024*1024*16];
+uint8_t dummyprobs[1024*1024*16*8];
 int main( int argc, char ** argv )
 {
 	int i;
+#if 0
+	for( i = 0; i < 256; i++ )
+	{
+		printf( "%2d", VPXCODING_VPXNORM( i ) );
+		if( ( i & 15 ) == 15 )
+		{
+			printf( "\n" );
+		}
+	}
+	return 0;
+#endif
 	for( i = 0; i < sizeof(dummydata); i++ )
 	{
 		//dummydata[i] = rand();
@@ -27,9 +40,8 @@ int main( int argc, char ** argv )
 	uint8_t * bufferO = malloc(sizeof(dummydata)*20);
 	vpx_start_encode( &w, bufferO, sizeof(dummydata)*20);
 
-	const int arbitrary_prob = 187;
-
 	double startEnc = GetAbsoluteTime();
+	int bitno = 0;
 	for( i = 0; i < sizeof(dummydata); i++ )
 	{
 		int data = dummydata[i];
@@ -37,8 +49,9 @@ int main( int argc, char ** argv )
 		int bit;
 		for (bit = bits - 1; bit >= 0; bit--)
 		{
+			int prob = dummyprobs[bitno++] = rand()&0xff;
 			int outbit = (data >> bit) & 1;
-			vpx_write(&w, outbit, arbitrary_prob);
+			vpx_write(&w, outbit, prob);
 		}
 	}
 	vpx_stop_encode(&w);
@@ -56,13 +69,14 @@ int main( int argc, char ** argv )
 	vpx_reader reader;
 	int ret = vpx_reader_init(&reader, bufferO, w.pos, 0, 0 );
 	double startDec = GetAbsoluteTime();
+	bitno = 0;
 	for( i = 0; i < sizeof(dummydata); i++ )
 	{
 		int bits = 8;
 		int bit;
 		uint8_t data = 0;
 		for (bit = bits - 1; bit >= 0; bit--)// Arbitrary, for testing
-			data = (data<<1) | vpx_read(&reader, arbitrary_prob);
+			data = (data<<1) | vpx_read(&reader, dummyprobs[bitno++]);
 		if( data != dummydata[i] )
 		{
 			fprintf( stderr, "Disagree at %d (%08x != %08x)\n", i, data, dummydata[i] );
