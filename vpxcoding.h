@@ -32,7 +32,6 @@
 #include <stdint.h>
 #include <limits.h>
 #include <string.h>
-#include <endian.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -44,23 +43,7 @@ extern "C" {
 #define VPXCODING_IMPLEMENTATION
 #endif
 
-#ifdef VPXCODING_NOTABLE
-VPXCODING_DECORATOR uint8_t vpx_norm( uint8_t n )
-{
-	return __builtin_clz(n) & 7;
-#if 0
-	// Implementation for systems w/o clz.
-	if( n == 0 ) return 0; // I don't think this is needed
-	int i = 7;
-	if( n >= 16 ) { i -= 4; n >>= 4; }
-	if( n >= 8 ) { i -= 3; n >>= 3; }
-	if( n >= 4 ) { i -= 2; n >>= 2; }
-	if( n >= 2 ) { i -= 1; n >>= 1; }
-	return i;
-#endif
-}
-#define VPXCODING_VPXNORM(x) vpx_norm(x)
-#else
+#ifndef VPXCODING_CUSTOM_VPXNORM
 static const uint8_t vpx_norm[256] = {
 	0, 7, 6, 6, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
@@ -79,9 +62,8 @@ static const uint8_t vpx_norm[256] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
-
-#define VPXCODING_VPXNORM( x ) vpx_norm[x]
 #endif
+
 #ifdef VPXCODING_READER
 
 // This is meant to be a large, positive constant that can still be
@@ -193,12 +175,13 @@ VPXCODING_DECORATOR void vpx_reader_fill(vpx_reader *r)
 	if (bits_left > BD_VALUE_SIZE) {
 		const int bits = (shift & 0xfffffff8) + CHAR_BIT;
 		BD_VALUE nv;
-		BD_VALUE big_endian_values;
-		memcpy(&big_endian_values, buffer, sizeof(BD_VALUE));
+		BD_VALUE big_endian_values = 0;
+		int n;
 #ifdef VPX_64BIT
-		big_endian_values = htobe64(big_endian_values);
+		// Formulated a little unusually, but selected by looking through different godbolt outputs, comparing this and |= (buffer[n]<<(56-n*8))
+		for( n = 0; n < 8; n++ ) big_endian_values = (big_endian_values<<8) | buffer[n];
 #else
-		big_endian_values = htobe32(big_endian_values);
+		for( n = 0; n < 4; n++ ) big_endian_values = (big_endian_values<<8) | buffer[n];
 #endif
 		nv = big_endian_values >> (BD_VALUE_SIZE - bits);
 		count += bits;
@@ -280,7 +263,7 @@ VPXCODING_DECORATOR int vpx_read(vpx_reader *r, int prob) {
 	}
 
 	{
-		const unsigned char shift = VPXCODING_VPXNORM((unsigned char)range);
+		const unsigned char shift = vpx_norm[(unsigned char)range];
 		range <<= shift;
 		value <<= shift;
 		count -= shift;
@@ -342,7 +325,7 @@ VPXCODING_DECORATOR void vpx_start_encode(vpx_writer *br, uint8_t *source, size_
 // Returns 0 on success and returns -1 in case of error.
 VPXCODING_DECORATOR int vpx_stop_encode(vpx_writer *br);
 
-VPXCODING_DECORATOR VPX_NO_UNSIGNED_SHIFT_CHECK void vpx_write(vpx_writer *br,
+static inline VPX_NO_UNSIGNED_SHIFT_CHECK void vpx_write(vpx_writer *br,
 	int bit, int probability);
 
 static inline void vpx_write_bit(vpx_writer *w, int bit) {
@@ -355,7 +338,7 @@ static inline void vpx_write_literal(vpx_writer *w, int data, int bits) {
 }
 
 
-VPXCODING_DECORATOR VPX_NO_UNSIGNED_SHIFT_CHECK void vpx_write(vpx_writer *br,
+static inline VPX_NO_UNSIGNED_SHIFT_CHECK void vpx_write(vpx_writer *br,
 	int bit, int probability) {
 	unsigned int split;
 	int count = br->count;
@@ -385,7 +368,7 @@ VPXCODING_DECORATOR VPX_NO_UNSIGNED_SHIFT_CHECK void vpx_write(vpx_writer *br,
 		range = br->range - split;
 	}
 
-	shift = VPXCODING_VPXNORM(range);
+	shift = vpx_norm[range];
 
 	range <<= shift;
 	count += shift;
@@ -476,4 +459,5 @@ VPXCODING_DECORATOR int vpx_stop_encode(vpx_writer *br) {
 #endif
 
 #endif
+
 
