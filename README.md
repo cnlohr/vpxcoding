@@ -99,7 +99,7 @@ NOTE: This is found emperically.  It may not be correct or as-designed.
 
 ## Overall Properties
 
-![Optimal Compression Ratio](https://github.com/user-attachments/assets/a0bc9ddd-686d-4782-9a3e-00c5940398a9)
+![Optimal Compression Ratio](https://github.com/user-attachments/assets/02b9d48f-497c-4633-87b8-42a0e345aeaa)
 
 ![Overall](https://github.com/user-attachments/assets/55d98d1d-9fc9-4bb2-a436-16dd0fbc603d)
 
