@@ -14,14 +14,18 @@ int main( int argc, char ** argv )
 {
 	srand( 1 );
 	int i;
-	printf( "Probability of 1," );
+	FILE * fOpt = fopen( "FullList.csv", "w" );
+	FILE * fOptPar = fopen( "FullListPar.csv", "w" );
+	fprintf( fOpt, "Probability of 1," );
 	for( int probability = 0; probability < 256; probability++ )
 	{
-		printf( "%d,", probability );
+		fprintf( fOpt, "%d,", probability );
 	}
-	printf( "Best\n" );	double percentones = 0.0;
+	fprintf( fOpt, "Best\n" );	double percentones = 0.0;
 	for( percentones = 0.0; percentones < 100; percentones+=0.1 )
 	{
+		printf( "%f\n", percentones );
+
 		memset( dummydata, 0, sizeof( dummydata ) );
 		for( i = 0; i < sizeof(dummydata); i++ )
 		{
@@ -35,7 +39,7 @@ int main( int argc, char ** argv )
 			}
 		}
 
-		printf( "%.1f%%,",percentones);
+		fprintf( fOpt, "%.1f%%,",percentones);
 		int bestprob;
 		double bestrate;
 		bestprob = 0;
@@ -64,7 +68,7 @@ int main( int argc, char ** argv )
 			}
 			//printf( "Relative Size: %.2f %%\n", w.pos * 100.0 / sizeof(dummydata) );
 			double rate = w.pos * 100.0 / sizeof(dummydata);
-			printf( "%.4f,", rate );
+			fprintf( fOpt, "%.4f,", rate );
 			if( bestrate > rate )
 			{
 				bestrate = rate;
@@ -87,7 +91,8 @@ int main( int argc, char ** argv )
 				}
 			}
 		}
-		printf( "%d\n",bestprob );
+		fprintf( fOpt, "%d\n",bestprob );
+		fprintf( fOptPar, "%f,%f,%d\n", percentones, bestrate, bestprob );
 	}
 
 
