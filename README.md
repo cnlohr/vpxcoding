@@ -2,7 +2,7 @@
 
 **WIP Note** - This offshoot has not been battle-hardened, and is subject to change.  Also, hopefully in time there will be more complete, practical examples.
 
-Single file header form of the arithmetic coder from [libvpx](https://github.com/webmproject/libvpx) (From the video codec VP8/VP9) as a general purpose compression/decompression of bitstreams algorithm.
+Single file header form of the range coder from [libvpx](https://github.com/webmproject/libvpx) (From the video codec VP8/VP9) as a general purpose compression/decompression of bitstreams algorithm.  [Range Coding](https://en.wikipedia.org/wiki/Range_coding) is a type of [Arithmatic Coding](https://en.wikipedia.org/wiki/Arithmetic_coding), able to offer even better compression than the provably optmal [Huffman Coding](https://en.wikipedia.org/wiki/Huffman_coding) because it can represent symbols using partaial numbers of bits.
 
 The idea of this coding is, given:
 
