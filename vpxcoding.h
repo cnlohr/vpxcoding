@@ -18,13 +18,56 @@
  *    3. Changed vpx_norm to be configurable (For low-flash situations)
  *    4. Removed endian-specific code, and just iterated directly.
  *
- *  To Use:
+ * For embedded use, you can define VPX_64BIT or VPX_32BIT.
+ *
+ *  Minimal example application:
+
+#include <stdlib.h>
+#include <stdio.h>
 
 #define VPXCODING_READER
 #define VPXCODING_WRITER
+#define VPXCODING_NOTABLE
 #include "vpxcoding.h"
 
- * For embedded use, you can define VPX_64BIT or VPX_32BIT.
+#define NELEM 1000000
+
+int data_to_compress[NELEM];
+uint8_t compressed_data[NELEM];
+
+// Stored as individual 1's and 0's for clarity.
+uint8_t compressed_bitstream[NELEM*16];
+
+int main()
+{
+	int i, j, k;
+
+	// Generate a string of 0's and 1's, but mostly 0's
+	for( i = 0; i < NELEM; i++ )
+		data_to_compress[i] = ((rand()%12)==0) ? 1 : 0;
+
+	int probability_of_0 = 256 - (int)( 1.0 * 255.0 / 12.0 );
+
+	vpx_writer w;
+	vpx_start_encode( &w, compressed_data, sizeof(compressed_data) );
+	for( i = 0; i < NELEM; i++ )
+		vpx_write( &w, data_to_compress[i], probability_of_0 );
+	vpx_stop_encode( &w );
+
+	int encode_length = w.pos;
+	printf( "Compressed size: %d\n", encode_length );
+
+	vpx_reader r;
+	vpx_reader_init( &r, compressed_data, encode_length, 0, 0 );
+	for( i = 0; i < NELEM; i++ )
+		if( data_to_compress[i] != vpx_read( &r, probability_of_0 ) )
+			printf( "Compression failed\n" );
+	// No need to cleanup.
+
+	printf( "Done\n" );
+
+	return 0;
+}
 
  */
 
