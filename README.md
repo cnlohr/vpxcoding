@@ -107,6 +107,8 @@ NOTE: This is found emperically.  It may not be correct or as-designed.
 
 ![Optimal](https://github.com/user-attachments/assets/d2315457-68a6-460e-aaa2-73ba25c0b0aa)
 
+## TODO
+ * Make a variant which uses no data if probability is 0 or 255.
 
 ## Special Thanks
 
