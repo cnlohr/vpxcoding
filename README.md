@@ -96,6 +96,9 @@ It appears the optimal bit selection is:
 
 NOTE: This is found emperically.  It may not be correct or as-designed.
 
+## More complicated symbols
+
+You can use [probabilitytree.h](probabilitytree.h) to encode symbols.  For instance if you wanted to encode text, you could list out the frequencies of all your letters and call `ProbabilityTreeGenerateProbabilities`.  This creates a table that can be used to encode or decode whole sybmols at a time with `ProbabilityTreeReadSym` and `ProbabilityTreeWriteSym`.
 
 ## Overall Properties
 
