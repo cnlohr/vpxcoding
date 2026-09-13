@@ -46,6 +46,7 @@ extern "C" {
 #endif
 
 #ifndef VPXCODING_CUSTOM_VPXNORM
+#define VPXCODING_CUSTOM_VPXNORM( x ) vpx_norm[x]
 static const uint8_t vpx_norm[256] = {
 	0, 7, 6, 6, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
@@ -265,7 +266,7 @@ VPXCODING_DECORATOR int vpx_read(vpx_reader *r, int prob) {
 	}
 
 	{
-		const unsigned char shift = vpx_norm[(unsigned char)range];
+		const unsigned char shift = VPXCODING_CUSTOM_VPXNORM((unsigned char)range);
 		range <<= shift;
 		value <<= shift;
 		count -= shift;
@@ -370,7 +371,7 @@ static inline VPX_NO_UNSIGNED_SHIFT_CHECK void vpx_write(vpx_writer *br,
 		range = br->range - split;
 	}
 
-	shift = vpx_norm[range];
+	shift = VPXCODING_CUSTOM_VPXNORM( range );
 
 	range <<= shift;
 	count += shift;
