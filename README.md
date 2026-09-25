@@ -1,6 +1,10 @@
 # vpxcoding single-file-header C library
 
-**WIP Note** - This offshoot has not been battle-hardened, and is subject to change.  Also, hopefully in time there will be more complete, practical examples.
+> [!NOTE]
+> I have been using this for several projects now and have not found an issue. But, this offshoot has not been battle-hardened, and is subject to change.  Also, hopefully in time there will be more complete, practical examples.
+
+> [!TIP]
+> If you are looking for a more stripped down entropy range coding application, and do not need reverse compatibility with VPX, especially if using embedded applications, consider using [speedtropy](https://codeberg.org/cnlohr/speedtropy)
 
 Single file header form of the range coder from [libvpx](https://github.com/webmproject/libvpx) (From the video codec VP8/VP9) as a general purpose compression/decompression of bitstreams algorithm.  [Range Coding](https://en.wikipedia.org/wiki/Range_coding) is a type of [Arithmatic Coding](https://en.wikipedia.org/wiki/Arithmetic_coding), able to offer even better compression than the provably optmal [Huffman Coding](https://en.wikipedia.org/wiki/Huffman_coding) because it can represent symbols using partaial numbers of bits.
 
